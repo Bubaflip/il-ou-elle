@@ -10,8 +10,6 @@ export default function Music() {
         const audio = audioRef.current;
         if (!audio) return;
 
-        audio.volume = 0.25;
-
         const start = () => {
             audio.play()
                 .then(() => {
