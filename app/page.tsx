@@ -1,66 +1,64 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+'use client';
+
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { getOrCreatePlayerId } from '@/lib/player-id';
+import { createRoom } from '@/lib/room';
+import Shell from './shell';
+import Mascot from './mascot';
 
 export default function Home() {
-  return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className={styles.intro}>
-          <h1>To get started, edit the page.tsx file.</h1>
-          <p>
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className={styles.secondary}
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
-  );
+    const router = useRouter();
+    const [busy, setBusy] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+
+    async function handleCreate() {
+        setBusy(true);
+        setError(null);
+        try {
+            const playerId = getOrCreatePlayerId();
+            const room = await createRoom(playerId);
+            router.push(`/room/${room.id}`);
+        } catch (err) {
+            console.error(err);
+            setError('Oups ! Réessaye dans une seconde.');
+            setBusy(false);
+        }
+    }
+
+    return (
+        <Shell>
+            <div className="stage stage--center">
+                <Mascot mood="hello" priority />
+
+                <h1 className="bigtitle" aria-label="Il ou Elle">
+                    <span>I</span><span>l</span>
+                    <span className="gap"> </span>
+                    <span>o</span><span>u</span>
+                    <span className="gap"> </span>
+                    <span>E</span><span>l</span><span>l</span><span>e</span>
+                </h1>
+
+                <button
+                    className="btn btn--xl btn--coral btn--block"
+                    onClick={handleCreate}
+                    disabled={busy}
+                >
+                    {busy ? 'Préparation…' : 'Jouer'}
+                    {!busy && <span className="arrow" aria-hidden="true">→</span>}
+                </button>
+
+                {error && <p className="notice" role="alert">{error}</p>}
+
+                <details className="rules">
+                    <summary>Comment jouer ?</summary>
+                    <ol>
+                        <li>Pense à une personne que l’autre connaît.</li>
+                        <li>L’autre pose des questions à voix haute.</li>
+                        <li>Quand il sait, il tape le nom.</li>
+                    </ol>
+                </details>
+            </div>
+        </Shell>
+    );
 }
