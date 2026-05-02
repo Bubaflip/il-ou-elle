@@ -5,9 +5,9 @@ import Image from 'next/image';
 export type Mood = 'hello' | 'loading' | 'yay';
 
 const SOURCES: Record<Mood, { src: string; w: number; h: number }> = {
-    hello:   { src: '/mascot/hello.png',   w: 320, h: 300 },
-    loading: { src: '/mascot/loading.png', w: 300, h: 340 },
-    yay:     { src: '/mascot/yay.png',     w: 320, h: 360 },
+    hello:   { src: '/mascot/hello.webp',   w: 320, h: 300 },
+    loading: { src: '/mascot/loading.webp', w: 300, h: 340 },
+    yay:     { src: '/mascot/yay.webp',     w: 320, h: 360 },
 };
 
 const ALT: Record<Mood, string> = {

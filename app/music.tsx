@@ -42,7 +42,7 @@ export default function Music() {
 
     return (
         <>
-            <audio ref={audioRef} src="/flim.mp3" loop preload="auto" />
+            <audio ref={audioRef} src="/flim.mp3" loop preload="none" />
             <button
                 type="button"
                 className={`music-toggle ${muted ? 'is-muted' : 'is-playing'}`}
